@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>りくさん へ</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Orbitron',sans-serif;
+text-align:center;
+background:#000;
+color:white;
+overflow:hidden;
+touch-action:manipulation;
+}
+
+/* ===== グリッド背景 ===== */
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+linear-gradient(rgba(0,255,255,0.08) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0,255,255,0.08) 1px, transparent 1px);
+background-size:40px 40px;
+animation:gridMove 8s linear infinite;
+pointer-events:none;
+}
+
+@keyframes gridMove{
+0%{transform:translate(0,0);}
+100%{transform:translate(40px,40px);}
+}
+
+/* ===== スタート画面 ===== */
+#startScreen{
+margin-top:35vh;
+}
+
+#escapeArea{
+position:relative;
+width:90%;
+max-width:400px;
+margin:0 auto;
+height:200px;
+}
+
+#escapeBtn{
+position:absolute;
+left:50%;
+top:70%;
+transform:translate(-50%,-50%);
+padding:12px 20px;
+font-size:18px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+}
+
+/* ===== カウントダウン ===== */
+#countdown{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:120px;
+font-weight:bold;
+width:200px;
+height:200px;
+line-height:200px;
+border-radius:50%;
+border:4px solid #00ffff;
+text-align:center;
+box-shadow:0 0 30px #00ffff;
+}
+
+/* ===== フラッシュ ===== */
+#flash{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:white;
+opacity:0;
+pointer-events:none;
+transition:opacity .2s;
+}
+
+/* ===== ネオン画面 ===== */
+#neonScreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+opacity:0;
+pointer-events:none;
+transition:opacity 1.5s ease;
+background:radial-gradient(circle,#111 0%,#000 80%);
+}
+
+#neonScreen.active{
+opacity:1;
+pointer-events:auto;
+}
+
+/* ===== ステージ ===== */
+.stage{
+position:absolute;
+bottom:0;
+width:100%;
+height:35%;
+background:linear-gradient(to top,#111,transparent);
+box-shadow:0 -20px 60px rgba(0,255,255,0.2);
+}
+
+/* ===== グリッチタイトル ===== */
+.neonTitle{
+margin-top:8vh;
+font-size:7vw;
+font-weight:bold;
+color:#00ffff;
+text-shadow:
+0 0 10px #00ffff,
+0 0 20px #00ffff,
+0 0 40px #00ffff;
+}
+
+.glitch{
+position:relative;
+}
+
+.glitch::before,
+.glitch::after{
+content:attr(data-text);
+position:absolute;
+left:0;
+top:0;
+width:100%;
+opacity:0.7;
+}
+
+.glitch::before{
+color:#0ff;
+transform:translate(2px,0);
+animation:glitch1 .3s infinite;
+}
+
+.glitch::after{
+color:#f0f;
+transform:translate(-2px,0);
+animation:glitch2 .3s infinite;
+}
+
+@keyframes glitch1{
+0%{clip-path:inset(0 0 80% 0);}
+50%{clip-path:inset(20% 0 30% 0);}
+100%{clip-path:inset(0 0 80% 0);}
+}
+
+@keyframes glitch2{
+0%{clip-path:inset(80% 0 0 0);}
+50%{clip-path:inset(30% 0 20% 0);}
+100%{clip-path:inset(80% 0 0 0);}
+}
+
+/* ===== ボタン ===== */
+.neonButton{
+margin-top:30px;
+padding:15px 30px;
+font-size:20px;
+border:2px solid #00ffff;
+background:transparent;
+color:#00ffff;
+border-radius:12px;
+box-shadow:0 0 10px #00ffff;
+transition:.2s;
+}
+
+.neonButton:hover{
+background:#00ffff;
+color:#000;
+box-shadow:0 0 20px #00ffff,0 0 40px #00ffff;
+transform:scale(1.1);
+}
+
+.neonButton:active{
+transform:scale(0.95);
+box-shadow:0 0 40px #00ffff;
+}
+
+/* ===== クラッカー ===== */
+.cracker{
+position:absolute;
+width:10px;
+height:6px;
+border-radius:2px;
+animation:crackerBurst 1.2s ease-out forwards;
+}
+
+@keyframes crackerBurst{
+0%{
+transform:translate(0,0) rotate(0deg);
+opacity:1;
+}
+100%{
+transform:translate(var(--x),var(--y)) rotate(720deg);
+opacity:0;
+}
+}
+
+/* ===== スマホ最適化 ===== */
+@media (max-width:600px){
+
+.neonTitle{
+font-size:10vw;
+}
+
+#countdown{
+width:140px;
+height:140px;
+line-height:140px;
+font-size:70px;
+}
+
+.neonButton{
+font-size:16px;
+padding:12px 20px;
+}
+
+p{
+font-size:16px;
+padding:0 10px;
+}
+
+#startScreen h2{
+font-size:18px;
+padding:0 10px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="startScreen">
+  <div id="escapeArea">
+    <h2>本日のお誕生日様ですか？</h2>
+    <button id="escapeBtn" onclick="startCountdown()">Yes</button>
+  </div>
+</div>
+
+<div id="countdown"></div>
+<div id="flash"></div>
+
+<div id="neonScreen">
+
+<h1 class="neonTitle glitch" data-text="HAPPY BIRTHDAY">HAPPY BIRTHDAY</h1>
+<h1 class="neonTitle glitch" data-text="りくさん">りくさん</h1>
+
+<p style="font-size:22px;">良い一年になりますように。</p>
+
+<button id="celebrateBtn" class="neonButton" onclick="celebrate()">
+おめぇーーーー！！！！！！！！
+</button>
+
+<div class="stage"></div>
+
+</div>
+
+<audio id="sound"
+src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b5b5b6f3b.mp3">
+</audio>
+
+<script>
+
+/* ===== ズーム防止 ===== */
+document.addEventListener("touchmove", e=>{
+if(e.scale !== 1) e.preventDefault();
+},{passive:false});
+
+let lastTouch=0;
+document.addEventListener("touchend", e=>{
+let now=Date.now();
+if(now-lastTouch<=300) e.preventDefault();
+lastTouch=now;
+},false);
+
+/* ===== 逃げるボタン（範囲制限版） ===== */
+const btn=document.getElementById("escapeBtn");
+let moveCount=0;
+
+btn.addEventListener("mouseenter",moveButton);
+btn.addEventListener("touchstart",moveButton);
+
+function moveButton(){
+
+if(moveCount>5) return;
+moveCount++;
+
+const area=document.getElementById("escapeArea");
+
+const areaWidth=area.clientWidth;
+const areaHeight=area.clientHeight;
+
+const btnWidth=btn.offsetWidth;
+const btnHeight=btn.offsetHeight;
+
+const x=Math.random()*(areaWidth-btnWidth);
+const y=Math.random()*(areaHeight-btnHeight);
+
+btn.style.left=x+"px";
+btn.style.top=y+"px";
+
+}
+
+/* ===== カウントダウン ===== */
+function startCountdown(){
+
+document.getElementById("startScreen").style.display="none";
+
+let countdown=document.getElementById("countdown");
+countdown.style.display="block";
+
+let count=3;
+countdown.innerText=count;
+
+let interval=setInterval(()=>{
+
+count--;
+
+if(count>0){
+
+countdown.innerText=count;
+
+countdown.animate([
+{transform:"translate(-50%,-50%) scale(0.3)",opacity:0},
+{transform:"translate(-50%,-50%) scale(1)",opacity:1}
+],{duration:500});
+
+}else{
+
+countdown.innerText="START";
+
+setTimeout(()=>{
+clearInterval(interval);
+countdown.style.display="none";
+flashAndShow();
+},800);
+
+}
+
+},1000);
+
+}
+
+/* ===== フラッシュ ===== */
+function flashAndShow(){
+
+let flash=document.getElementById("flash");
+flash.style.opacity="1";
+
+setTimeout(()=>{
+flash.style.opacity="0";
+document.getElementById("neonScreen").classList.add("active");
+},120);
+
+}
+
+/* ===== 画面揺れ ===== */
+function shakeScreen(){
+document.body.style.transform="translate(5px,0)";
+setTimeout(()=>{document.body.style.transform="translate(-5px,0)"},50);
+setTimeout(()=>{document.body.style.transform="translate(0,0)"},100);
+}
+
+/* ===== 祝う ===== */
+let celebrateLevel=0;
+
+const celebrateMessages=[
+"おめでとおおおおおお！！！！",
+"祝。",
+"うおおおおおお！！！",
+"８８８８８８８８８８",
+"おめえー",
+"🎉🎉🎉🎉🎉",
+"🍰"
+];
+
+function celebrate(){
+
+document.getElementById("sound").play();
+shakeScreen();
+
+celebrateLevel++;
+let btn=document.getElementById("celebrateBtn");
+btn.innerText=celebrateMessages[
+celebrateLevel%celebrateMessages.length
+];
+
+let originX=window.innerWidth/2;
+let originY=window.innerHeight*0.6;
+
+for(let i=0;i<120;i++){
+
+let paper=document.createElement("div");
+paper.className="cracker";
+
+paper.style.left=originX+"px";
+paper.style.top=originY+"px";
+
+paper.style.background=`hsl(${Math.random()*360},100%,60%)`;
+
+paper.style.setProperty("--x",(Math.random()-0.5)*600+"px");
+paper.style.setProperty("--y",(Math.random()-1)*600+"px");
+
+document.body.appendChild(paper);
+
+setTimeout(()=>paper.remove(),1200);
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
